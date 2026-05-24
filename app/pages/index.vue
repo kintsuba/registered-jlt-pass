@@ -234,7 +234,7 @@ const startBookmarkSession = () =>
       <div class="space-y-4">
         <NuxtLink
           to="/settings"
-          class="flex items-center justify-between bg-white p-5 md:p-6 rounded-2xl md:rounded-3xl border border-slate-100 hover:border-sakura-200 hover:shadow-md transition-all active:scale-[0.98]"
+          class="flex md:hidden items-center justify-between bg-white p-5 md:p-6 rounded-2xl md:rounded-3xl border border-slate-100 hover:border-sakura-200 hover:shadow-md transition-all active:scale-[0.98]"
         >
           <div class="flex items-center gap-4">
             <div
@@ -276,18 +276,6 @@ const startBookmarkSession = () =>
             </svg>
           </div>
         </NuxtLink>
-      </div>
-
-      <!-- TanStack DB Status (検証用) -->
-      <div class="mt-8 text-center">
-        <p class="text-xs text-slate-400 font-mono">
-          <ClientOnly>
-            <span>TanStack DB: {{ loadedCount }} questions loaded.</span>
-            <template #fallback>
-              <span>Loading local database...</span>
-            </template>
-          </ClientOnly>
-        </p>
       </div>
     </section>
   </div>
