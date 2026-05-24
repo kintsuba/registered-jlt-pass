@@ -13,16 +13,16 @@ async function getLocalBrowser() {
     page.on("console", (msg) => console.log("PAGE LOG:", msg.type(), msg.text()));
     page.on("pageerror", (error) => console.log("PAGE ERROR:", error.message));
 
-    console.log("Navigating to http://localhost:3000...");
-    await page.goto("http://localhost:3000", { waitUntil: "networkidle" });
-    
+    console.log("Navigating to http://localhost:3001...");
+    await page.goto("http://localhost:3001", { waitUntil: "networkidle" });
+
     console.log("Taking screenshot...");
     await page.screenshot({ path: "ui-verification.png", fullPage: true });
-    
+
     // Generate token
     fs.writeFileSync(".ui-verified", new Date().toISOString());
     console.log("Screenshot saved to ui-verification.png and .ui-verified token generated.");
-    
+
     await browser.close();
   } catch (e) {
     console.error("Script error:", e);

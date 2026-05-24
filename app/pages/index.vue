@@ -5,6 +5,7 @@ import { useLiveQuery } from "@tanstack/vue-db";
 import {
   questionCollection,
   sessionCollection,
+  progressCollection,
   upsertLocal,
   type Session,
 } from "~/lib/collections";
@@ -12,24 +13,130 @@ import { getRandomQuestions, getIncorrectQuestions, getBookmarkedQuestions } fro
 
 const router = useRouter();
 
-// 動的メッセージのモックデータ
-const dynamicMessages = [
-  { sub: "3日連続学習中！", main: "素晴らしいペースです" },
-  { sub: "未正解が18問あります", main: "苦手克服から始めますか？" },
-  { sub: "本日の演習: 50問", main: "少し休憩しませんか？☕️" },
-  { sub: "新しい一日です", main: "今日もコツコツ進めましょう" },
-];
-
-const currentMessage = ref(dynamicMessages[0]);
-
-onMounted(() => {
-  const randomIndex = Math.floor(Math.random() * dynamicMessages.length);
-  currentMessage.value = dynamicMessages[randomIndex];
-});
+// (Removed mock dynamicMessages)
 
 const { data: dbQuestions } = useLiveQuery((q) =>
   q.from({ questions: questionCollection }).select(({ questions }) => questions),
 );
+
+const { data: sessionsData } = useLiveQuery((q) =>
+  q.from({ s: sessionCollection }).select(({ s }) => s),
+);
+
+const { data: progressData } = useLiveQuery((q) =>
+  q.from({ p: progressCollection }).select(({ p }) => p),
+);
+
+const currentMessage = computed(() => {
+  const sessions = sessionsData.value || [];
+  const progresses = progressData.value || [];
+
+  const now = new Date();
+  const todayStr = now.toLocaleDateString("ja-JP");
+  const currentHour = now.getHours();
+
+  // Metrics calculation
+  const totalQuestionsAnswered = sessions.reduce((sum, s) => sum + s.questionCount, 0);
+
+  const todaySessions = sessions.filter(
+    (s) => s.completedAt && new Date(s.completedAt).toLocaleDateString("ja-JP") === todayStr,
+  );
+  const todayQuestions = todaySessions.reduce((sum, s) => sum + s.questionCount, 0);
+
+  const incorrectCount = progresses.filter((p) => p.hasAnswered && !p.hasCorrect).length;
+  const bookmarkCount = progresses.filter((p) => p.bookmarked).length;
+
+  // Last access & Consecutive days
+  const activeDatesStr = sessions
+    .filter((s) => s.completedAt)
+    .map((s) => new Date(s.completedAt).toLocaleDateString("ja-JP"));
+  const activeDates = new Set(activeDatesStr);
+
+  const sortedSessions = [...sessions]
+    .filter((s) => s.completedAt)
+    .sort((a, b) => new Date(b.completedAt!).getTime() - new Date(a.completedAt!).getTime());
+
+  const lastSession = sortedSessions[0];
+  const lastAccessDate = lastSession ? new Date(lastSession.completedAt!) : null;
+
+  let daysSinceLastAccess = 0;
+  if (lastAccessDate) {
+    // 0時のリセット基準で日数を計算
+    const lastAccessDay = new Date(lastAccessDate).setHours(0, 0, 0, 0);
+    const currentDay = new Date(now).setHours(0, 0, 0, 0);
+    daysSinceLastAccess = Math.floor((currentDay - lastAccessDay) / (1000 * 3600 * 24));
+  }
+
+  let consecutiveDays = 0;
+  const yesterday = new Date(now);
+  yesterday.setDate(yesterday.getDate() - 1);
+  const yesterdayStr = yesterday.toLocaleDateString("ja-JP");
+
+  if (activeDates.has(todayStr) || activeDates.has(yesterdayStr)) {
+    let checkDate = activeDates.has(todayStr) ? new Date(now) : new Date(yesterday);
+    while (activeDates.has(checkDate.toLocaleDateString("ja-JP"))) {
+      consecutiveDays++;
+      checkDate.setDate(checkDate.getDate() - 1);
+    }
+  }
+
+  // Tier 1: Milestones
+  const milestones = [1000, 500, 100];
+  for (const ms of milestones) {
+    if (totalQuestionsAnswered >= ms && totalQuestionsAnswered - todayQuestions < ms) {
+      return { sub: `累計${ms}問達成！`, main: "その調子でどんどん解きましょう🎉" };
+    }
+  }
+
+  // Tier 2: Context
+  if (daysSinceLastAccess >= 3) {
+    return { sub: "お久しぶりです！", main: "マイペースに学習を再開しましょう🌱" };
+  }
+  if (todayQuestions >= 50) {
+    return { sub: `今日はもう${todayQuestions}問も頑張りましたね`, main: "少し休憩しませんか？☕️" };
+  }
+  if (currentHour >= 0 && currentHour < 4) {
+    return { sub: "夜遅くまでお疲れ様です", main: "無理せず早めに休んでくださいね🦉" };
+  }
+
+  // Tier 3: Performance & Action
+  if (lastSession && lastSession.questionCount > 0) {
+    const lastAccuracy = (lastSession.correctCount / lastSession.questionCount) * 100;
+    if (lastAccuracy >= 90) {
+      return { sub: `前回の正答率は${Math.round(lastAccuracy)}%！`, main: "絶好調ですね✨" };
+    }
+  }
+  if (incorrectCount >= 10) {
+    return { sub: `未正解が${incorrectCount}問あります`, main: "苦手克服から始めますか？" };
+  }
+  if (bookmarkCount >= 5) {
+    return {
+      sub: `ブックマークが${bookmarkCount}問あります`,
+      main: "復習して確実にマスターしましょう📚",
+    };
+  }
+
+  // Tier 4: Habit
+  if (consecutiveDays >= 3) {
+    return { sub: `${consecutiveDays}日連続学習中！`, main: "毎日の継続が力になります🔥" };
+  }
+  const dayOfWeek = now.getDay();
+  if (dayOfWeek === 0 || dayOfWeek === 6) {
+    return { sub: "週末ですね", main: "じっくり復習するチャンスです📅" };
+  }
+  if (dayOfWeek === 1) {
+    return { sub: "新しい1週間の始まり", main: "今週も目標に向かって頑張りましょう🚀" };
+  }
+
+  // Tier 5: Time of Day
+  if (currentHour >= 5 && currentHour < 11) {
+    return { sub: "おはようございます", main: "朝の学習は脳に定着しやすいです☀️" };
+  }
+  if (currentHour >= 18) {
+    return { sub: "こんばんは", main: "1日の総仕上げをしましょう🌙" };
+  }
+  return { sub: "こんにちは", main: "今日もコツコツ進めましょう" };
+});
 
 // 取得した問題数を計算
 const loadedCount = computed(() => dbQuestions.value?.length || 0);
