@@ -248,15 +248,11 @@ const { data: sessionItems } = useLiveQuery((q) =>
 );
 const session = computed(() => sessionItems.value?.[0] || null);
 
-watch(session, (newVal) => {
-  if (newVal === undefined && sessionItems.value !== undefined) {
-    // データがロードされたがセッションが無い場合
-    alert("セッションが見つかりません");
-    router.replace("/");
-  }
-});
-
 const currentIndex = ref(0);
+const initialized = ref(false);
+
+// Moved watch(session) to the end of the file
+
 const hasAnswered = ref(false);
 const selectedChoice = ref<number | null>(null);
 const isCorrect = ref(false);
@@ -451,6 +447,9 @@ const nextQuestion = async () => {
       const transition = document.startViewTransition(async () => {
         window.scrollTo(0, 0);
         currentIndex.value++;
+        sessionCollection.update(session.value!.sessionId, (draft) => {
+          draft.currentIndex = currentIndex.value;
+        });
         await loadQuestion();
       });
       // MANDATORY Accessibility Routing (from modern-web-guidance)
@@ -460,6 +459,9 @@ const nextQuestion = async () => {
     } else {
       window.scrollTo(0, 0);
       currentIndex.value++;
+      sessionCollection.update(session.value!.sessionId, (draft) => {
+        draft.currentIndex = currentIndex.value;
+      });
       loadQuestion();
       // Accessibility routing fallback
       setTimeout(() => document.getElementById("question-heading")?.focus(), 0);
@@ -472,6 +474,25 @@ const confirmExit = () => {
     router.push("/");
   }
 };
+
+watch(
+  session,
+  (newVal) => {
+    if (newVal === undefined && sessionItems.value !== undefined) {
+      // データがロードされたがセッションが無い場合
+      alert("セッションが見つかりません");
+      router.replace("/");
+    } else if (newVal && !initialized.value) {
+      const loadedIndex = newVal.currentIndex ?? 0;
+      if (currentIndex.value !== loadedIndex) {
+        currentIndex.value = loadedIndex;
+        loadQuestion();
+      }
+      initialized.value = true;
+    }
+  },
+  { immediate: true },
+);
 </script>
 
 <style scoped>

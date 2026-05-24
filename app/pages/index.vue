@@ -141,6 +141,25 @@ const currentMessage = computed(() => {
 // 取得した問題数を計算
 const loadedCount = computed(() => dbQuestions.value?.length || 0);
 
+const incompleteSession = computed(() => {
+  if (!sessionsData.value) return null;
+  const incompleted = sessionsData.value.filter((s) => !s.completedAt);
+  if (incompleted.length === 0) return null;
+  return incompleted.sort((a, b) => b.sessionId.localeCompare(a.sessionId))[0];
+});
+
+const resumeSession = () => {
+  if (incompleteSession.value) {
+    if (document.startViewTransition) {
+      document.startViewTransition(() => {
+        router.push(`/session/${incompleteSession.value.sessionId}`);
+      });
+    } else {
+      router.push(`/session/${incompleteSession.value.sessionId}`);
+    }
+  }
+};
+
 const createAndGoToSession = async (
   mode: "random" | "incorrect" | "bookmark",
   getQuestions: () => Promise<any[]>,
@@ -158,6 +177,7 @@ const createAndGoToSession = async (
     questionIds: questions.map((q) => q.id),
     questionCount: questions.length,
     correctCount: 0,
+    currentIndex: 0,
   };
 
   upsertLocal(sessionCollection, sessionId, newSession);
@@ -185,6 +205,55 @@ const startBookmarkSession = () =>
     <!-- メイン学習メニュー -->
     <section>
       <div class="grid gap-4 mt-6">
+        <!-- Resume Session Button -->
+        <button
+          v-if="incompleteSession"
+          @click="resumeSession"
+          class="group flex items-center justify-between p-5 md:p-6 bg-slate-800 rounded-2xl md:rounded-3xl shadow-lg hover:bg-slate-700 hover:shadow-xl text-white active:scale-[0.98] transition-all cursor-pointer"
+        >
+          <div class="flex items-center gap-4">
+            <div
+              class="w-12 h-12 md:w-16 md:h-16 rounded-full bg-white/20 text-white flex items-center justify-center group-hover:scale-110 transition-transform duration-300"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-6 h-6 md:w-8 md:h-8"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polygon points="5 3 19 12 5 21 5 3" />
+              </svg>
+            </div>
+            <div>
+              <h2 class="font-bold text-white text-[18px] md:text-2xl text-left">
+                中断した演習を再開
+              </h2>
+              <p class="text-[12px] md:text-sm text-slate-300 mt-1 md:mt-1.5 font-bold text-left">
+                {{ incompleteSession.currentIndex + 1 }}問目からスタート
+              </p>
+            </div>
+          </div>
+          <div class="text-white group-hover:translate-x-1 transition-transform">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="3"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="m9 18 6-6-6-6" />
+            </svg>
+          </div>
+        </button>
+
         <button
           @click="startRandomSession"
           class="group flex items-center justify-between p-5 md:p-6 bg-white rounded-2xl md:rounded-3xl border border-slate-100 shadow-sm hover:border-sakura-200 hover:shadow-md hover:bg-sakura-50/30 text-sakura-500 active:scale-[0.98] transition-all cursor-pointer"
