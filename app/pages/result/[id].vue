@@ -181,13 +181,17 @@
           </div>
         </div>
       </div>
+      <LoginPromptModal v-if="showLoginPrompt" @close="showLoginPrompt = false" />
     </ClientOnly>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref, computed, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import { queryOnce } from "@tanstack/db";
+import LoginPromptModal from "~/components/LoginPromptModal.vue";
+import { useAuth } from "~/composables/useAuth";
 import {
   questionCollection,
   sessionCollection,
@@ -275,6 +279,28 @@ const retrySession = async () => {
     router.push(`/session/${newSessionId}`);
   }
 };
+
+const showLoginPrompt = ref(false);
+const { currentUser, isAuthReady } = useAuth();
+
+// ログイン誘導ロジック: 5回目の演習完了時に未ログインの場合に表示
+watch(
+  [isAuthReady, () => session.value?.completedAt],
+  async ([ready, completedAt]) => {
+    if (ready && completedAt && !currentUser.value) {
+      // 全セッションから完了済みセッション数をカウント
+      const allSessions = await queryOnce((q) =>
+        q.from({ s: sessionCollection }).select(({ s }) => s),
+      );
+      const completedCount = allSessions.filter((s) => s.completedAt).length;
+
+      if (completedCount === 5) {
+        showLoginPrompt.value = true;
+      }
+    }
+  },
+  { immediate: true },
+);
 </script>
 
 <style scoped>

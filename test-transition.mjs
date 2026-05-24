@@ -11,9 +11,9 @@ async function getLocalBrowser() {
     const context = await browser.newContext({
       recordVideo: {
         dir: "C:\\Users\\bnxth\\.gemini\\antigravity\\brain\\9fb0d178-98ab-41f1-9046-8fa69366c760",
-        size: { width: 414, height: 896 }
+        size: { width: 414, height: 896 },
       },
-      viewport: { width: 414, height: 896 } // Mobile size
+      viewport: { width: 414, height: 896 }, // Mobile size
     });
     const page = await context.newPage();
     page.on("console", (msg) => console.log("PAGE LOG:", msg.type(), msg.text()));
@@ -21,7 +21,7 @@ async function getLocalBrowser() {
 
     console.log("Navigating to top page...");
     await page.goto("http://localhost:3001", { waitUntil: "networkidle" });
-    
+
     console.log("Clicking random session...");
     await page.click("text=ランダム演習");
     await page.waitForTimeout(1000);
@@ -29,7 +29,7 @@ async function getLocalBrowser() {
     console.log("Selecting a choice...");
     // Just click the first choice
     await page.click("text=A");
-    
+
     console.log("Waiting for explanation to appear...");
     await page.waitForTimeout(1000); // Give it time to read
 
@@ -39,7 +39,7 @@ async function getLocalBrowser() {
 
     console.log("Clicking next question...");
     await page.click("text=次の問題へ");
-    
+
     // Wait for view transition to finish
     await page.waitForTimeout(1500);
 

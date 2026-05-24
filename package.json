@@ -22,6 +22,7 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@nuxt/test-utils": "^4.0.3",
     "happy-dom": "^20.9.0",
     "playwright-core": "^1.60.0",
     "vite-plus": "^0.1.22"

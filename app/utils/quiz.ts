@@ -16,13 +16,8 @@ export function shuffleArray<T>(array: T[]): T[] {
   return arr;
 }
 
-// ランダム抽出 (直前のセッションを除外するルールを適用)
-export async function getRandomQuestions(count: number = 10): Promise<Question[]> {
-  const allQuestions = await queryOnce((q) =>
-    q.from({ qs: questionCollection }).select(({ qs }) => qs),
-  );
-  if (allQuestions.length === 0) return [];
-
+// ユーティリティ: 直前セッションで出題した問題を除外する
+async function filterRecentSession(candidates: Question[], count: number): Promise<Question[]> {
   const recentSessions = await queryOnce((q) =>
     q.from({ s: sessionCollection }).select(({ s }) => s),
   );
@@ -33,15 +28,23 @@ export async function getRandomQuestions(count: number = 10): Promise<Question[]
   const lastQuestionIds = lastSession ? lastSession.questionIds : [];
   const lastQuestionIdSet = new Set(lastQuestionIds);
 
-  // 直前セッションを除外した候補
-  let candidates = allQuestions.filter((q) => !lastQuestionIdSet.has(q.id));
+  let filtered = candidates.filter((q) => !lastQuestionIdSet.has(q.id));
 
   // 候補が足りない場合は、直前セッションの問題も復活させる
-  if (candidates.length < count) {
-    candidates = allQuestions;
+  if (filtered.length < Math.min(count, candidates.length)) {
+    filtered = candidates;
   }
 
-  return shuffleArray(candidates).slice(0, count);
+  return shuffleArray(filtered).slice(0, count);
+}
+
+// ランダム抽出 (直前のセッションを除外するルールを適用)
+export async function getRandomQuestions(count: number = 10): Promise<Question[]> {
+  const allQuestions = await queryOnce((q) =>
+    q.from({ qs: questionCollection }).select(({ qs }) => qs),
+  );
+  if (allQuestions.length === 0) return [];
+  return filterRecentSession(allQuestions, count);
 }
 
 // カテゴリ別抽出
@@ -52,25 +55,8 @@ export async function getCategoryQuestions(
   const allQuestions = await queryOnce((q) =>
     q.from({ qs: questionCollection }).select(({ qs }) => qs),
   );
-  let candidates = allQuestions.filter((q) => q.officialCategory === categoryId);
-
-  // 直前除外ルール適用
-  const recentSessions = await queryOnce((q) =>
-    q.from({ s: sessionCollection }).select(({ s }) => s),
-  );
-  const lastSession = recentSessions.sort((a, b) =>
-    (b.completedAt || "").localeCompare(a.completedAt || ""),
-  )[0];
-  const lastQuestionIds = lastSession ? lastSession.questionIds : [];
-  const lastQuestionIdSet = new Set(lastQuestionIds);
-
-  let filtered = candidates.filter((q) => !lastQuestionIdSet.has(q.id));
-
-  if (filtered.length < Math.min(count, candidates.length)) {
-    filtered = candidates;
-  }
-
-  return shuffleArray(filtered).slice(0, count);
+  const candidates = allQuestions.filter((q) => q.officialCategory === categoryId);
+  return filterRecentSession(candidates, count);
 }
 
 // 間違えた問題からの抽出
@@ -87,8 +73,7 @@ export async function getIncorrectQuestions(count: number = 10): Promise<Questio
     q.from({ qs: questionCollection }).select(({ qs }) => qs),
   );
   const candidates = allQuestions.filter((q) => incorrectIds.has(q.id));
-
-  return shuffleArray(candidates).slice(0, count);
+  return filterRecentSession(candidates, count);
 }
 
 // ブックマークからの抽出
@@ -102,6 +87,5 @@ export async function getBookmarkedQuestions(count: number = 10): Promise<Questi
     q.from({ qs: questionCollection }).select(({ qs }) => qs),
   );
   const candidates = allQuestions.filter((q) => bookmarkedIds.has(q.id));
-
-  return shuffleArray(candidates).slice(0, count);
+  return filterRecentSession(candidates, count);
 }
