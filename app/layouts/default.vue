@@ -1,5 +1,7 @@
 <script setup lang="ts">
+import { useAuth } from "~/composables/useAuth";
 const route = useRoute();
+const { currentUser } = useAuth();
 </script>
 
 <template>
@@ -56,6 +58,7 @@ const route = useRoute();
             >設定</NuxtLink
           >
           <NuxtLink
+            v-if="!currentUser"
             to="/login"
             class="text-xs font-bold text-white bg-slate-800 hover:bg-slate-700 px-4 py-2 rounded-full transition-colors ml-2"
             >ログイン</NuxtLink
@@ -63,7 +66,10 @@ const route = useRoute();
         </div>
 
         <!-- スマホ用ログインボタン -->
-        <NuxtLink to="/login" class="md:hidden text-xs font-bold text-sakura-600"
+        <NuxtLink
+          v-if="!currentUser"
+          to="/login"
+          class="md:hidden text-xs font-bold text-sakura-600"
           >ログイン</NuxtLink
         >
       </header>
