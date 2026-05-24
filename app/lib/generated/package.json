@@ -1,0 +1,25 @@
+{
+  "name": "@dataconnect/generated",
+  "version": "1.0.0",
+  "description": "Generated SDK For example",
+  "license": "Apache-2.0",
+  "author": "Firebase <firebase-support@google.com> (https://firebase.google.com/)",
+  "main": "index.cjs.js",
+  "module": "esm/index.esm.js",
+  "browser": "esm/index.esm.js",
+  "typings": "index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "require": "./index.cjs.js",
+      "default": "./esm/index.esm.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "peerDependencies": {
+    "firebase": "^12.11.0"
+  },
+  "engines": {
+    "node": " >=18.0"
+  }
+}

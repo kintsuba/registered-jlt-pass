@@ -1,0 +1,24 @@
+type Progress @table(name: "progress") {
+  id: String!
+  userId: String!
+  questionId: String!
+  hasAnswered: Boolean!
+  hasCorrect: Boolean!
+  attemptCount: Int!
+  wrongCount: Int!
+  lastAnsweredAt: String
+  bookmarked: Boolean!
+}
+
+type StudySession @table(name: "study_sessions") {
+  id: String!
+  userId: String!
+  sessionId: String!
+  mode: String!
+  categoryId: String
+  questionIds: [String!]!
+  incorrectQuestionIds: [String!]
+  correctCount: Int!
+  questionCount: Int!
+  completedAt: String
+}

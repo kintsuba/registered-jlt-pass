@@ -1,0 +1,45 @@
+{
+  "name": "Questions",
+  "description": "Registered JLT Pass Questions",
+  "fields": [
+    { "name": "id", "type": "singleLineText" },
+    {
+      "name": "status",
+      "type": "singleSelect",
+      "options": {
+        "choices": [
+          { "name": "draft" },
+          { "name": "review" },
+          { "name": "published" },
+          { "name": "archived" }
+        ]
+      }
+    },
+    {
+      "name": "officialCategory",
+      "type": "singleSelect",
+      "options": {
+        "choices": [
+          { "name": "社会・文化・地域" },
+          { "name": "言語と社会" },
+          { "name": "言語と心理" },
+          { "name": "言語と教育" },
+          { "name": "言語一般" }
+        ]
+      }
+    },
+    {
+      "name": "tags",
+      "type": "multipleSelects",
+      "options": { "choices": [{ "name": "頻出" }, { "name": "難問" }] }
+    },
+    { "name": "questionText", "type": "multilineText" },
+    { "name": "choices", "type": "multilineText" },
+    { "name": "correctChoice", "type": "number", "options": { "precision": 0 } },
+    { "name": "explanation", "type": "multilineText" },
+    { "name": "choiceExplanations", "type": "multilineText" },
+    { "name": "sourceNote", "type": "multilineText" },
+    { "name": "referenceUrl", "type": "url" },
+    { "name": "authorNote", "type": "multilineText" }
+  ]
+}

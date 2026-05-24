@@ -1,0 +1,13 @@
+specVersion: "v1"
+serviceId: "jlt-pass-service"
+location: "asia-northeast1"
+schema:
+  source: "./schema"
+  datasource:
+    postgresql:
+      database: "jlt-pass-database"
+      cloudSql:
+        instanceId: "jlt-pass-instance"
+        # schemaValidation: "STRICT"     # STRICT mode makes Postgres schema match Data Connect exactly.
+        # schemaValidation: "COMPATIBLE" # COMPATIBLE mode makes Postgres schema compatible with Data Connect.
+connectorDirs: ["./example"]

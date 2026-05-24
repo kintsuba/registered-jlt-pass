@@ -10,16 +10,21 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@dataconnect/generated": "file:./app/lib/generated",
+    "@tailwindcss/vite": "^4.3.0",
+    "@tanstack/db": "0.6.6",
+    "@tanstack/vue-db": "^0.0.117",
+    "firebase": "^12.13.0",
     "nuxt": "^4.4.6",
+    "tailwindcss": "^4.3.0",
     "vue": "^3.5.34",
-    "vue-router": "^5.0.7"
+    "vue-router": "^5.0.7",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
+    "happy-dom": "^20.9.0",
+    "playwright-core": "^1.60.0",
     "vite-plus": "^0.1.22"
   },
-  "overrides": {
-    "vite": "npm:@voidzero-dev/vite-plus-core@latest",
-    "vitest": "npm:@voidzero-dev/vite-plus-test@latest"
-  },
-  "packageManager": "npm@10.9.4"
+  "packageManager": "pnpm@9.15.0"
 }

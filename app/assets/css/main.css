@@ -1,0 +1,63 @@
+@import "tailwindcss";
+
+@theme {
+  --color-sakura-50: #fdf2f8;
+  --color-sakura-100: #fce7f3;
+  --color-sakura-200: #fbcfe8;
+  --color-sakura-300: #f9a8d4;
+  --color-sakura-400: #f472b6;
+  --color-sakura-500: #ec4899;
+  --color-sakura-600: #db2777;
+  --color-sakura-700: #be185d;
+  --color-sakura-800: #9d174d;
+  --color-sakura-900: #831843;
+}
+
+@layer base {
+  body {
+    @apply bg-slate-50 text-slate-900 selection:bg-sakura-200;
+  }
+}
+
+@layer utilities {
+  .animate-in {
+    animation-duration: 500ms;
+    animation-fill-mode: both;
+    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .fade-in {
+    animation-name: fadeIn;
+  }
+
+  .slide-in-from-bottom-4 {
+    animation-name: slideInFromBottom4;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInFromBottom4 {
+  from {
+    transform: translateY(1rem);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+/* MANDATORY: Respect user preferences for reduced motion with View Transitions */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}

@@ -1,0 +1,86 @@
+# Get all progress for a user
+query GetMyProgress($userId: String!) @auth(level: USER) {
+  progresses(where: { userId: { eq: $userId } }) {
+    id
+    userId
+    questionId
+    hasAnswered
+    hasCorrect
+    attemptCount
+    wrongCount
+    lastAnsweredAt
+    bookmarked
+  }
+}
+
+# Get all study sessions for a user
+query GetMySessions($userId: String!) @auth(level: USER) {
+  studySessions(where: { userId: { eq: $userId } }) {
+    id
+    userId
+    sessionId
+    mode
+    categoryId
+    questionIds
+    incorrectQuestionIds
+    correctCount
+    questionCount
+    completedAt
+  }
+}
+
+# Upsert a single progress record
+mutation UpsertProgress(
+  $id: String!
+  $userId: String!
+  $questionId: String!
+  $hasAnswered: Boolean!
+  $hasCorrect: Boolean!
+  $attemptCount: Int!
+  $wrongCount: Int!
+  $lastAnsweredAt: String
+  $bookmarked: Boolean!
+) @auth(level: USER) {
+  progress_upsert(
+    data: {
+      id: $id
+      userId: $userId
+      questionId: $questionId
+      hasAnswered: $hasAnswered
+      hasCorrect: $hasCorrect
+      attemptCount: $attemptCount
+      wrongCount: $wrongCount
+      lastAnsweredAt: $lastAnsweredAt
+      bookmarked: $bookmarked
+    }
+  )
+}
+
+# Upsert a study session
+mutation UpsertSession(
+  $id: String!
+  $userId: String!
+  $sessionId: String!
+  $mode: String!
+  $categoryId: String
+  $questionIds: [String!]!
+  $incorrectQuestionIds: [String!]
+  $correctCount: Int!
+  $questionCount: Int!
+  $completedAt: String
+) @auth(level: USER) {
+  studySession_upsert(
+    data: {
+      id: $id
+      userId: $userId
+      sessionId: $sessionId
+      mode: $mode
+      categoryId: $categoryId
+      questionIds: $questionIds
+      incorrectQuestionIds: $incorrectQuestionIds
+      correctCount: $correctCount
+      questionCount: $questionCount
+      completedAt: $completedAt
+    }
+  )
+}
