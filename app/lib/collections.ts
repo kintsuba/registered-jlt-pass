@@ -50,6 +50,7 @@ export const sessionSchema = z.object({
   incorrectQuestionIds: z.array(z.string()).optional(),
   correctCount: z.number().default(0),
   questionCount: z.number(),
+  currentIndex: z.number().default(0),
   completedAt: z.string().optional(),
 });
 
