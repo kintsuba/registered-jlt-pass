@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# ステージングされたファイルにUI関連が含まれているかチェック
+if git diff --cached --name-only | grep -E '\.(vue|css|scss|html|ts)$' > /dev/null; then
+  # コミットメッセージのファイルから読み込む
+  COMMIT_MSG_FILE=$1
+  if [ -f "$COMMIT_MSG_FILE" ]; then
+    if ! grep -q "\[ui-verified\]" "$COMMIT_MSG_FILE"; then
+      echo "==========================================================="
+      echo "❌ ERROR: UI Verification Required!"
+      echo "UI関連のファイルが変更されています。"
+      echo "Chrome（ブラウザサブエージェント）での画面確認を行いましたか？"
+      echo "確認済みの場合は、コミットメッセージに [ui-verified] を含めてください。"
+      echo "例: feat(ui): [ui-verified] update index layout"
+      echo "==========================================================="
+      exit 1
+    fi
+  fi
+fi
+exit 0
