@@ -35,6 +35,7 @@ Before committing, check the staged diff and choose the narrowest accurate type.
 - Verify that the layout looks correct.
 - If the browser subagent encounters a system error (e.g., server capacity issues), it is acceptable to skip the check, but it should always be attempted first as part of the standard workflow.
 - **CRITICAL**: When reviewing screenshots, actively look for obvious visual bugs or broken layouts (squished text, overlapping elements, unintended obscuring of content). Even if the issue wasn't explicitly pointed out by the user, you MUST fix any obvious problems before reporting back to the user.
+- **CRITICAL**: After successfully verifying the UI with the browser subagent, you MUST include the `[ui-verified]` tag in your commit message (e.g., `feat(ui): [ui-verified] update layout`). If you fail to do this, the git hook will block your commit.
 
 ## Command Execution
 - **CRITICAL**: Do NOT execute commands starting with `&` (e.g., `& "C:\path\to\script.ps1"; command`). Bulk or dot-sourced script executions are difficult for the user to review and approve. Always invoke executables or scripts directly.
