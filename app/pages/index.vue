@@ -197,7 +197,7 @@ const startBookmarkSession = () =>
 <template>
   <div class="space-y-8 md:space-y-12">
     <!-- 動的ダッシュボードヘッダー -->
-    <section class="mb-6 md:mb-10 min-h-[84px] md:min-h-[100px] flex flex-col justify-end">
+    <section class="mb-4 md:mb-6 min-h-[84px] md:min-h-[100px] flex flex-col justify-end">
       <p class="text-sm md:text-base text-sakura-600 font-bold mb-1.5">{{ currentMessage?.sub }}</p>
       <h1 class="text-2xl md:text-3xl font-extrabold text-slate-800 tracking-tight leading-tight">
         {{ currentMessage?.main }}
@@ -211,15 +211,15 @@ const startBookmarkSession = () =>
         <button
           v-if="incompleteSession"
           @click="resumeSession"
-          class="group flex items-center justify-between p-5 md:p-6 bg-slate-800 rounded-2xl md:rounded-3xl shadow-lg hover:bg-slate-700 hover:shadow-xl text-white active:scale-[0.98] transition-all cursor-pointer"
+          class="group flex items-center justify-between p-3 md:p-4 bg-amber-50 rounded-2xl md:rounded-2xl border border-amber-200 shadow-sm hover:bg-amber-100 hover:border-amber-300 transition-all active:scale-[0.98] cursor-pointer"
         >
-          <div class="flex items-center gap-4">
+          <div class="flex items-center gap-3 md:gap-4">
             <div
-              class="w-12 h-12 md:w-16 md:h-16 rounded-full bg-white/20 text-white flex items-center justify-center group-hover:scale-110 transition-transform duration-300"
+              class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-amber-200/50 text-amber-600 flex items-center justify-center group-hover:scale-110 transition-transform duration-300"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                class="w-6 h-6 md:w-8 md:h-8"
+                class="w-4 h-4 md:w-5 md:h-5"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
@@ -231,19 +231,19 @@ const startBookmarkSession = () =>
               </svg>
             </div>
             <div>
-              <h2 class="font-bold text-white text-[18px] md:text-2xl text-left">
+              <h2 class="font-bold text-amber-900 text-[16px] md:text-xl text-left">
                 中断した演習を再開
               </h2>
-              <p class="text-[12px] md:text-sm text-slate-300 mt-1 md:mt-1.5 font-bold text-left">
+              <p class="text-[11px] md:text-sm text-amber-700 mt-0.5 md:mt-1 font-bold text-left">
                 {{ incompleteSession.currentIndex + 1 }}問目からスタート
               </p>
             </div>
           </div>
-          <div class="text-white group-hover:translate-x-1 transition-transform">
+          <div class="text-amber-500 group-hover:translate-x-1 transition-transform">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
+              width="20"
+              height="20"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -258,11 +258,11 @@ const startBookmarkSession = () =>
 
         <button
           @click="startRandomSession"
-          class="group flex items-center justify-between p-5 md:p-6 bg-white rounded-2xl md:rounded-3xl border border-slate-100 shadow-sm hover:border-sakura-200 hover:shadow-md hover:bg-sakura-50/30 text-sakura-500 active:scale-[0.98] transition-all cursor-pointer"
+          class="group flex items-center justify-between p-5 md:p-6 bg-gradient-to-br from-sakura-50 to-white rounded-2xl md:rounded-3xl border-2 border-sakura-200 shadow-sm hover:border-sakura-300 hover:shadow-md active:scale-[0.98] transition-all cursor-pointer"
         >
-          <div class="flex items-center gap-4">
+          <div class="flex items-center gap-4 md:gap-5">
             <div
-              class="w-12 h-12 md:w-16 md:h-16 rounded-full bg-sakura-50 text-sakura-500 flex items-center justify-center group-hover:scale-110 transition-transform duration-300"
+              class="w-12 h-12 md:w-16 md:h-16 rounded-full bg-sakura-100 text-sakura-500 flex items-center justify-center group-hover:scale-110 group-hover:-rotate-6 transition-all duration-300 shadow-inner"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -274,23 +274,30 @@ const startBookmarkSession = () =>
                 stroke-linecap="round"
                 stroke-linejoin="round"
               >
-                <path d="m18 15-6-6-6 6" />
+                <rect width="12" height="12" x="2" y="10" rx="2" ry="2" />
+                <path d="m17.92 14 3.5-3.5a2.24 2.24 0 0 0 0-3l-5-4.92a2.24 2.24 0 0 0-3 0L10 6" />
+                <path d="M6 18h.01" />
+                <path d="M10 14h.01" />
+                <path d="M15 6h.01" />
+                <path d="M18 9h.01" />
               </svg>
             </div>
             <div>
-              <h2 class="font-bold text-slate-800 text-[18px] md:text-2xl text-left">
+              <h2
+                class="font-extrabold text-slate-800 text-[18px] md:text-2xl text-left tracking-tight"
+              >
                 ランダム演習
               </h2>
-              <p class="text-[12px] md:text-sm text-slate-500 mt-1 md:mt-1.5 font-bold">
+              <p class="text-[12px] md:text-sm text-slate-500 mt-1 md:mt-1.5 font-bold text-left">
                 全範囲から10問出題
               </p>
             </div>
           </div>
-          <div class="text-sakura-400 group-hover:translate-x-1 transition-transform">
+          <div class="text-sakura-400 group-hover:translate-x-2 transition-transform duration-300">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
+              width="28"
+              height="28"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -306,14 +313,14 @@ const startBookmarkSession = () =>
         <div class="grid grid-cols-2 gap-3 md:gap-4 mt-2">
           <button
             @click="startIncorrectSession"
-            class="flex flex-col items-center justify-center p-5 md:p-6 bg-white rounded-2xl md:rounded-3xl border border-slate-100 shadow-sm hover:border-rose-200 hover:shadow-md hover:bg-rose-50/30 text-rose-500 active:scale-[0.98] transition-all cursor-pointer"
+            class="flex flex-col items-center justify-center p-4 md:p-5 bg-white rounded-2xl md:rounded-3xl border border-slate-100 shadow-sm hover:border-rose-200 hover:shadow-md hover:bg-rose-50/30 text-rose-500 active:scale-[0.98] transition-all cursor-pointer"
           >
             <div
-              class="w-12 h-12 md:w-16 md:h-16 rounded-full bg-rose-50 text-rose-500 flex items-center justify-center mb-4 md:mb-6"
+              class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-rose-50 text-rose-500 flex items-center justify-center mb-3 md:mb-4"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                class="w-6 h-6 md:w-8 md:h-8"
+                class="w-5 h-5 md:w-6 md:h-6"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
@@ -331,14 +338,14 @@ const startBookmarkSession = () =>
 
           <NuxtLink
             to="/categories"
-            class="flex flex-col items-center justify-center p-5 md:p-6 bg-white rounded-2xl md:rounded-3xl border border-slate-100 shadow-sm hover:border-blue-200 hover:shadow-md hover:bg-blue-50/30 text-blue-500 active:scale-[0.98] transition-all cursor-pointer"
+            class="flex flex-col items-center justify-center p-4 md:p-5 bg-white rounded-2xl md:rounded-3xl border border-slate-100 shadow-sm hover:border-blue-200 hover:shadow-md hover:bg-blue-50/30 text-blue-500 active:scale-[0.98] transition-all cursor-pointer"
           >
             <div
-              class="w-12 h-12 md:w-16 md:h-16 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center mb-4 md:mb-6"
+              class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center mb-3 md:mb-4"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                class="w-6 h-6 md:w-8 md:h-8"
+                class="w-5 h-5 md:w-6 md:h-6"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
@@ -358,14 +365,14 @@ const startBookmarkSession = () =>
 
           <button
             @click="startBookmarkSession"
-            class="flex flex-col items-center justify-center p-5 md:p-6 bg-white rounded-2xl md:rounded-3xl border border-slate-100 shadow-sm hover:border-amber-200 hover:shadow-md hover:bg-amber-50/30 text-amber-500 active:scale-[0.98] transition-all cursor-pointer"
+            class="flex flex-col items-center justify-center p-4 md:p-5 bg-white rounded-2xl md:rounded-3xl border border-slate-100 shadow-sm hover:border-amber-200 hover:shadow-md hover:bg-amber-50/30 text-amber-500 active:scale-[0.98] transition-all cursor-pointer"
           >
             <div
-              class="w-12 h-12 md:w-16 md:h-16 rounded-full bg-amber-50 text-amber-500 flex items-center justify-center mb-4 md:mb-6"
+              class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-amber-50 text-amber-500 flex items-center justify-center mb-3 md:mb-4"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                class="w-6 h-6 md:w-8 md:h-8"
+                class="w-5 h-5 md:w-6 md:h-6"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
@@ -381,14 +388,14 @@ const startBookmarkSession = () =>
           </button>
 
           <div
-            class="flex flex-col items-center justify-center p-5 md:p-6 bg-slate-50/50 rounded-2xl md:rounded-3xl border border-slate-100 shadow-sm opacity-60"
+            class="flex flex-col items-center justify-center p-4 md:p-5 bg-slate-50/50 rounded-2xl md:rounded-3xl border border-slate-100 shadow-sm opacity-60"
           >
             <div
-              class="w-12 h-12 md:w-16 md:h-16 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center mb-4 md:mb-6"
+              class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center mb-3 md:mb-4"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                class="w-6 h-6 md:w-8 md:h-8"
+                class="w-5 h-5 md:w-6 md:h-6"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
@@ -412,7 +419,7 @@ const startBookmarkSession = () =>
       <div class="space-y-4">
         <NuxtLink
           to="/settings"
-          class="flex md:hidden items-center justify-between bg-white p-5 md:p-6 rounded-2xl md:rounded-3xl border border-slate-100 hover:border-sakura-200 hover:shadow-md transition-all active:scale-[0.98]"
+          class="flex md:hidden items-center justify-between bg-white p-4 md:p-5 rounded-2xl md:rounded-3xl border border-slate-100 hover:border-sakura-200 hover:shadow-md transition-all active:scale-[0.98]"
         >
           <div class="flex items-center gap-4">
             <div
