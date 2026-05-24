@@ -231,6 +231,7 @@ import {
 } from "~/lib/collections";
 import { useLiveQuery } from "@tanstack/vue-db";
 import { eq, queryOnce } from "@tanstack/db";
+import { useDialog } from "~/composables/useDialog";
 
 definePageMeta({
   layout: false,
@@ -239,6 +240,7 @@ definePageMeta({
 const route = useRoute();
 const router = useRouter();
 const sessionId = route.params.id as string;
+const dialog = useDialog();
 
 const { data: sessionItems } = useLiveQuery((q) =>
   q
@@ -469,8 +471,11 @@ const nextQuestion = async () => {
   }
 };
 
-const confirmExit = () => {
-  if (confirm("演習を中断してホームに戻りますか？\n（進捗は次回引き継がれます）")) {
+const confirmExit = async () => {
+  const isConfirmed = await dialog.confirm(
+    "演習を中断してホームに戻りますか？\n（進捗は次回引き継がれます）",
+  );
+  if (isConfirmed) {
     router.push("/");
   }
 };
@@ -480,8 +485,9 @@ watch(
   (newVal) => {
     if (newVal === undefined && sessionItems.value !== undefined) {
       // データがロードされたがセッションが無い場合
-      alert("セッションが見つかりません");
-      router.replace("/");
+      dialog.alert("セッションが見つかりません").then(() => {
+        router.replace("/");
+      });
     } else if (newVal && !initialized.value) {
       const loadedIndex = newVal.currentIndex ?? 0;
       if (currentIndex.value !== loadedIndex) {

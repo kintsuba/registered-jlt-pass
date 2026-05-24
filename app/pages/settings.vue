@@ -2,9 +2,11 @@
 import { ref } from "vue";
 import { useAuth } from "~/composables/useAuth";
 import { useSync } from "~/composables/useSync";
+import { useDialog } from "~/composables/useDialog";
 
 const { currentUser, isAuthReady, logout } = useAuth();
 const { syncAll } = useSync();
+const dialog = useDialog();
 const isSyncing = ref(false);
 const lastSyncedAt = ref<string | null>(null);
 
@@ -23,20 +25,23 @@ const handleSync = async () => {
     });
   } catch (error) {
     console.error("Sync failed:", error);
-    alert("同期に失敗しました。後でもう一度お試しください。");
+    dialog.alert("同期に失敗しました。後でもう一度お試しください。");
   } finally {
     isSyncing.value = false;
   }
 };
 
 const handleLogout = async () => {
-  if (confirm("ログアウトしてもよろしいですか？（未同期のローカルデータはそのまま残ります）")) {
+  const isConfirmed = await dialog.confirm(
+    "ログアウトしてもよろしいですか？（未同期のローカルデータはそのまま残ります）",
+  );
+  if (isConfirmed) {
     await logout();
   }
 };
 
 const handleDeleteAccount = () => {
-  alert("アカウント削除機能は準備中です。");
+  dialog.alert("アカウント削除機能は準備中です。");
 };
 </script>
 

@@ -73,13 +73,19 @@ import {
 import { getCategoryQuestions } from "~/utils/quiz";
 import { useLiveQuery } from "@tanstack/vue-db";
 
+import { useDialog } from "~/composables/useDialog";
+
+const dialog = useDialog();
 const router = useRouter();
-const { data: dbItems } = useLiveQuery((q) =>
+
+// 全てのカテゴリを取得
+const { data: allQuestions } = useLiveQuery((q) =>
   q.from({ qs: questionCollection }).select(({ qs }) => qs),
 );
 
+// カテゴリ一覧とその問題数を計算
 const categories = computed(() => {
-  const allQs = dbItems.value || [];
+  const allQs = allQuestions.value || [];
   const counts = new Map<string, number>();
   for (const q of allQs) {
     if (q && q.officialCategory) {
@@ -98,7 +104,7 @@ const categories = computed(() => {
 const startSession = async (categoryId: string) => {
   const questions = await getCategoryQuestions(categoryId, 10);
   if (questions.length === 0) {
-    alert("問題がありません");
+    dialog.alert("問題がありません");
     return;
   }
 
@@ -110,10 +116,17 @@ const startSession = async (categoryId: string) => {
     questionIds: questions.map((q) => q.id),
     questionCount: questions.length,
     correctCount: 0,
+    currentIndex: 0,
   };
 
   upsertLocal(sessionCollection, sessionId, newSession);
 
-  router.push(`/session/${sessionId}`);
+  if (document.startViewTransition) {
+    document.startViewTransition(() => {
+      router.push(`/session/${sessionId}`);
+    });
+  } else {
+    router.push(`/session/${sessionId}`);
+  }
 };
 </script>

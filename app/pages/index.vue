@@ -10,8 +10,10 @@ import {
   type Session,
 } from "~/lib/collections";
 import { getRandomQuestions, getIncorrectQuestions, getBookmarkedQuestions } from "~/utils/quiz";
+import { useDialog } from "~/composables/useDialog";
 
 const router = useRouter();
+const dialog = useDialog();
 
 // (Removed mock dynamicMessages)
 
@@ -166,7 +168,7 @@ const createAndGoToSession = async (
 ) => {
   const questions = await getQuestions();
   if (questions.length === 0) {
-    alert("対象の問題がありません");
+    dialog.alert("対象の問題がありません");
     return;
   }
 

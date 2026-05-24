@@ -207,6 +207,7 @@ import {
 } from "~/utils/quiz";
 import { useLiveQuery } from "@tanstack/vue-db";
 import { eq } from "@tanstack/db";
+import { useDialog } from "~/composables/useDialog";
 
 definePageMeta({
   layout: false,
@@ -215,6 +216,7 @@ definePageMeta({
 const route = useRoute();
 const router = useRouter();
 const sessionId = route.params.id as string;
+const dialog = useDialog();
 
 const { data: sessionItems } = useLiveQuery((q) =>
   q
@@ -255,7 +257,7 @@ const retrySession = async () => {
   else if (mode === "bookmark") questions = await getBookmarkedQuestions(10);
 
   if (questions.length === 0) {
-    alert("対象の問題がありません");
+    dialog.alert("対象の問題がありません");
     return;
   }
 
