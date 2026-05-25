@@ -59,6 +59,7 @@ export const useSync = () => {
         wrongCount: p.wrongCount,
         lastAnsweredAt: p.lastAnsweredAt || null,
         bookmarked: p.bookmarked,
+        bookmarkedAt: p.bookmarkedAt || null,
       });
     }
 
@@ -105,6 +106,7 @@ export const useSync = () => {
           wrongCount: cp.wrongCount,
           lastAnsweredAt: cp.lastAnsweredAt || undefined,
           bookmarked: cp.bookmarked,
+          bookmarkedAt: cp.bookmarkedAt || undefined,
         });
       } else {
         // Merge logic
@@ -113,7 +115,16 @@ export const useSync = () => {
           draft.hasCorrect = draft.hasCorrect || cp.hasCorrect;
           draft.attemptCount = Math.max(draft.attemptCount, cp.attemptCount);
           draft.wrongCount = Math.max(draft.wrongCount, cp.wrongCount);
-          draft.bookmarked = draft.bookmarked || cp.bookmarked;
+
+          if (cp.bookmarkedAt) {
+            if (!draft.bookmarkedAt || new Date(cp.bookmarkedAt) > new Date(draft.bookmarkedAt)) {
+              draft.bookmarked = cp.bookmarked;
+              draft.bookmarkedAt = cp.bookmarkedAt;
+            }
+          } else if (cp.bookmarked && !draft.bookmarked) {
+            // Fallback for older records
+            draft.bookmarked = true;
+          }
 
           if (cp.lastAnsweredAt) {
             if (

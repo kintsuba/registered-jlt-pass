@@ -30,6 +30,7 @@ export const progressSchema = z.object({
   wrongCount: z.number().default(0),
   lastAnsweredAt: z.string().optional(),
   bookmarked: z.boolean().default(false),
+  bookmarkedAt: z.string().optional(),
 });
 
 export type Progress = z.infer<typeof progressSchema>;

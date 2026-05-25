@@ -1,5 +1,5 @@
 # Get all progress for a user
-query GetMyProgress($userId: String!) @auth(level: USER) {
+query GetMyProgress($userId: String!) @auth(expr: "auth.uid == vars.userId") {
   progresses(where: { userId: { eq: $userId } }) {
     id
     userId
@@ -10,11 +10,12 @@ query GetMyProgress($userId: String!) @auth(level: USER) {
     wrongCount
     lastAnsweredAt
     bookmarked
+    bookmarkedAt
   }
 }
 
 # Get all study sessions for a user
-query GetMySessions($userId: String!) @auth(level: USER) {
+query GetMySessions($userId: String!) @auth(expr: "auth.uid == vars.userId") {
   studySessions(where: { userId: { eq: $userId } }) {
     id
     userId
@@ -40,7 +41,8 @@ mutation UpsertProgress(
   $wrongCount: Int!
   $lastAnsweredAt: String
   $bookmarked: Boolean!
-) @auth(level: USER) {
+  $bookmarkedAt: String
+) @auth(expr: "auth.uid == vars.userId") {
   progress_upsert(
     data: {
       id: $id
@@ -52,6 +54,7 @@ mutation UpsertProgress(
       wrongCount: $wrongCount
       lastAnsweredAt: $lastAnsweredAt
       bookmarked: $bookmarked
+      bookmarkedAt: $bookmarkedAt
     }
   )
 }
@@ -68,7 +71,7 @@ mutation UpsertSession(
   $correctCount: Int!
   $questionCount: Int!
   $completedAt: String
-) @auth(level: USER) {
+) @auth(expr: "auth.uid == vars.userId") {
   studySession_upsert(
     data: {
       id: $id

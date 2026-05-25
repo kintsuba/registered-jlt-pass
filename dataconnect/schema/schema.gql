@@ -8,6 +8,7 @@ type Progress @table(name: "progress") {
   wrongCount: Int!
   lastAnsweredAt: String
   bookmarked: Boolean!
+  bookmarkedAt: String
 }
 
 type StudySession @table(name: "study_sessions") {

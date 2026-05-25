@@ -419,16 +419,16 @@ hasCorrect:
 どちらかが true なら true
 
 attemptCount:
-加算
+大きいほう (Math.max)
 
 wrongCount:
-加算
+大きいほう (Math.max)
 
 lastAnsweredAt:
 新しいほう
 
 bookmarked:
-更新日時が新しいほう
+bookmarkedAt が新しいほう (タイムスタンプによる判定)
 ```
 
 ## 演習セッション

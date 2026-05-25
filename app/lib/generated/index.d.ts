@@ -1,12 +1,4 @@
-import {
-  ConnectorConfig,
-  DataConnect,
-  QueryRef,
-  QueryPromise,
-  ExecuteQueryOptions,
-  MutationRef,
-  MutationPromise,
-} from "firebase/data-connect";
+import { ConnectorConfig, DataConnect, QueryRef, QueryPromise, ExecuteQueryOptions, MutationRef, MutationPromise } from 'firebase/data-connect';
 
 export const connectorConfig: ConnectorConfig;
 
@@ -14,6 +6,9 @@ export type TimestampString = string;
 export type UUIDString = string;
 export type Int64String = string;
 export type DateString = string;
+
+
+
 
 export interface GetMyProgressData {
   progresses: ({
@@ -26,6 +21,7 @@ export interface GetMyProgressData {
     wrongCount: number;
     lastAnsweredAt?: string | null;
     bookmarked: boolean;
+    bookmarkedAt?: string | null;
   } & Progress_Key)[];
 }
 
@@ -54,12 +50,12 @@ export interface GetMySessionsVariables {
 
 export interface Progress_Key {
   id: string;
-  __typename?: "Progress_Key";
+  __typename?: 'Progress_Key';
 }
 
 export interface StudySession_Key {
   id: string;
-  __typename?: "StudySession_Key";
+  __typename?: 'StudySession_Key';
 }
 
 export interface UpsertProgressData {
@@ -76,6 +72,7 @@ export interface UpsertProgressVariables {
   wrongCount: number;
   lastAnsweredAt?: string | null;
   bookmarked: boolean;
+  bookmarkedAt?: string | null;
 }
 
 export interface UpsertSessionData {
@@ -99,82 +96,47 @@ interface GetMyProgressRef {
   /* Allow users to create refs without passing in DataConnect */
   (vars: GetMyProgressVariables): QueryRef<GetMyProgressData, GetMyProgressVariables>;
   /* Allow users to pass in custom DataConnect instances */
-  (
-    dc: DataConnect,
-    vars: GetMyProgressVariables,
-  ): QueryRef<GetMyProgressData, GetMyProgressVariables>;
+  (dc: DataConnect, vars: GetMyProgressVariables): QueryRef<GetMyProgressData, GetMyProgressVariables>;
   operationName: string;
 }
 export const getMyProgressRef: GetMyProgressRef;
 
-export function getMyProgress(
-  vars: GetMyProgressVariables,
-  options?: ExecuteQueryOptions,
-): QueryPromise<GetMyProgressData, GetMyProgressVariables>;
-export function getMyProgress(
-  dc: DataConnect,
-  vars: GetMyProgressVariables,
-  options?: ExecuteQueryOptions,
-): QueryPromise<GetMyProgressData, GetMyProgressVariables>;
+export function getMyProgress(vars: GetMyProgressVariables, options?: ExecuteQueryOptions): QueryPromise<GetMyProgressData, GetMyProgressVariables>;
+export function getMyProgress(dc: DataConnect, vars: GetMyProgressVariables, options?: ExecuteQueryOptions): QueryPromise<GetMyProgressData, GetMyProgressVariables>;
 
 interface GetMySessionsRef {
   /* Allow users to create refs without passing in DataConnect */
   (vars: GetMySessionsVariables): QueryRef<GetMySessionsData, GetMySessionsVariables>;
   /* Allow users to pass in custom DataConnect instances */
-  (
-    dc: DataConnect,
-    vars: GetMySessionsVariables,
-  ): QueryRef<GetMySessionsData, GetMySessionsVariables>;
+  (dc: DataConnect, vars: GetMySessionsVariables): QueryRef<GetMySessionsData, GetMySessionsVariables>;
   operationName: string;
 }
 export const getMySessionsRef: GetMySessionsRef;
 
-export function getMySessions(
-  vars: GetMySessionsVariables,
-  options?: ExecuteQueryOptions,
-): QueryPromise<GetMySessionsData, GetMySessionsVariables>;
-export function getMySessions(
-  dc: DataConnect,
-  vars: GetMySessionsVariables,
-  options?: ExecuteQueryOptions,
-): QueryPromise<GetMySessionsData, GetMySessionsVariables>;
+export function getMySessions(vars: GetMySessionsVariables, options?: ExecuteQueryOptions): QueryPromise<GetMySessionsData, GetMySessionsVariables>;
+export function getMySessions(dc: DataConnect, vars: GetMySessionsVariables, options?: ExecuteQueryOptions): QueryPromise<GetMySessionsData, GetMySessionsVariables>;
 
 interface UpsertProgressRef {
   /* Allow users to create refs without passing in DataConnect */
   (vars: UpsertProgressVariables): MutationRef<UpsertProgressData, UpsertProgressVariables>;
   /* Allow users to pass in custom DataConnect instances */
-  (
-    dc: DataConnect,
-    vars: UpsertProgressVariables,
-  ): MutationRef<UpsertProgressData, UpsertProgressVariables>;
+  (dc: DataConnect, vars: UpsertProgressVariables): MutationRef<UpsertProgressData, UpsertProgressVariables>;
   operationName: string;
 }
 export const upsertProgressRef: UpsertProgressRef;
 
-export function upsertProgress(
-  vars: UpsertProgressVariables,
-): MutationPromise<UpsertProgressData, UpsertProgressVariables>;
-export function upsertProgress(
-  dc: DataConnect,
-  vars: UpsertProgressVariables,
-): MutationPromise<UpsertProgressData, UpsertProgressVariables>;
+export function upsertProgress(vars: UpsertProgressVariables): MutationPromise<UpsertProgressData, UpsertProgressVariables>;
+export function upsertProgress(dc: DataConnect, vars: UpsertProgressVariables): MutationPromise<UpsertProgressData, UpsertProgressVariables>;
 
 interface UpsertSessionRef {
   /* Allow users to create refs without passing in DataConnect */
   (vars: UpsertSessionVariables): MutationRef<UpsertSessionData, UpsertSessionVariables>;
   /* Allow users to pass in custom DataConnect instances */
-  (
-    dc: DataConnect,
-    vars: UpsertSessionVariables,
-  ): MutationRef<UpsertSessionData, UpsertSessionVariables>;
+  (dc: DataConnect, vars: UpsertSessionVariables): MutationRef<UpsertSessionData, UpsertSessionVariables>;
   operationName: string;
 }
 export const upsertSessionRef: UpsertSessionRef;
 
-export function upsertSession(
-  vars: UpsertSessionVariables,
-): MutationPromise<UpsertSessionData, UpsertSessionVariables>;
-export function upsertSession(
-  dc: DataConnect,
-  vars: UpsertSessionVariables,
-): MutationPromise<UpsertSessionData, UpsertSessionVariables>;
+export function upsertSession(vars: UpsertSessionVariables): MutationPromise<UpsertSessionData, UpsertSessionVariables>;
+export function upsertSession(dc: DataConnect, vars: UpsertSessionVariables): MutationPromise<UpsertSessionData, UpsertSessionVariables>;
+

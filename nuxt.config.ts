@@ -16,7 +16,7 @@ export default defineNuxtConfig({
       },
     },
   },
-  // modules: ["@nuxt/test-utils/module"],
+  modules: ["@nuxt/ui"],
   experimental: {
     viewTransition: true,
   },

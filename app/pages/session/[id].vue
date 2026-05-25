@@ -385,6 +385,7 @@ const toggleBookmark = async () => {
   if (existing) {
     progressCollection.update(existing.questionId, (draft) => {
       draft.bookmarked = isBookmarked.value;
+      draft.bookmarkedAt = new Date().toISOString();
     });
   } else {
     progressCollection.insert({
@@ -394,6 +395,7 @@ const toggleBookmark = async () => {
       attemptCount: 0,
       wrongCount: 0,
       bookmarked: isBookmarked.value,
+      bookmarkedAt: new Date().toISOString(),
     });
   }
 };
